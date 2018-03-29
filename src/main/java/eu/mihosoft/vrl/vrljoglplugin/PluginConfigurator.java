@@ -28,13 +28,15 @@ public class PluginConfigurator extends VPluginConfigurator{
        //
        // exportPackage("com.your.package");
 
+        exportClass("eu.mihosoft.vrl.vrljoglplugin.STLVisualization");
+
        // describe the plugin
        setDescription("JOGL Plugin");
 
        // copyright info
        setCopyrightInfo("JOGL-Plugin",
-               "(c) Your Name",
-               "www.you.com", "License Name", "License Text...");
+               "(c) Michael Hoffer",
+               "www.mihosoft.eu", "License Name", "License Text...");
 
        // specify dependencies
        // addDependency(new PluginDependency("VRL", "0.4.0", "0.4.0"));

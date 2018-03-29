@@ -11,7 +11,8 @@ import java.io.Serializable;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public interface Visualization extends Serializable{
+public interface Visualization extends Serializable {
 
-    public void initRendering(JOGLCanvas3D canvas);
+    void init(JOGLCanvas3D canvas);
+    void dispose(JOGLCanvas3D canvas);
 }

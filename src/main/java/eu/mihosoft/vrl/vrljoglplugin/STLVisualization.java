@@ -1,47 +1,40 @@
 package eu.mihosoft.vrl.vrljoglplugin;
 
-
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLDrawableFactory;
+
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
+
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import static com.jogamp.opengl.GL.GL_FRONT_AND_BACK;
 import static com.jogamp.opengl.GL.GL_TRIANGLES;
 import static com.jogamp.opengl.GL2.*; // GL2 constants
-import static com.jogamp.opengl.GL2GL3.GL_FILL;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+
 import javax.vecmath.Point3f;
 
 
 /**
  * JOGL 2.0 Example 2: Rotating 3D Shapes (GLCanvas)
  */
-@SuppressWarnings("serial")
 public class STLVisualization implements Visualization, GLEventListener {
     private static final long serialVersionUID=1L;
 
-    // Define constants for the top-level container
-    private static String TITLE = "STL Viewer";  // window's title
-    private static final int CANVAS_WIDTH = 800;  // width of the drawable
-    private static final int CANVAS_HEIGHT = 600; // height of the drawable
     private static final int FPS = 20; // animator's target frames per second
 
     private final List<Point3f> vertices = new ArrayList<>();
-    private File stlFile;
-    private FPSAnimator animator;
+    private transient FPSAnimator animator;
+
+    // Setup OpenGL Graphics Renderer
+    private transient GLU glu;  // for the GL Utility
+    private float angleRot = 0;    // rotational angle in degree
+    private final float rotSpeed = 0.5f; // rotational speed
 
 
     private void readSTL(File file) throws IOException {
@@ -52,12 +45,6 @@ public class STLVisualization implements Visualization, GLEventListener {
 
         System.out.println("file: " + file + ", #verts: " + vertices.size());
     }
-
-    // Setup OpenGL Graphics Renderer
-    private GLU glu;  // for the GL Utility
-    private float angleRot = 0;    // rotational angle in degree for pyramid
-    private final float rotSpeed = 0.5f; // rotational speed for pyramid
-
 
     // ------ Implement methods declared in GLEventListener ------
     /**
@@ -84,7 +71,6 @@ public class STLVisualization implements Visualization, GLEventListener {
      */
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-
         GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
 
         if (height == 0) {
@@ -158,17 +144,32 @@ public class STLVisualization implements Visualization, GLEventListener {
         if(animator!=null) {
             animator.stop();
         }
+
+        drawable.removeGLEventListener(this);
     }
 
     @Override
-    public void initRendering(JOGLCanvas3D canvas) {
+    public void init(JOGLCanvas3D canvas) {
         canvas.addGLEventListener(this);
         animator = new FPSAnimator(canvas, FPS, true);
         animator.start(); // start the animation loop
     }
 
+    @Override
+    public void dispose(JOGLCanvas3D canvas) {
+        if(animator!=null) {
+            animator.stop();
+            try {
+                animator.remove(canvas);
+            } catch(Exception ex) {
+                // if it fails, we already removed it
+            }
+        }
+
+        canvas.removeGLEventListener(this);
+    }
+
     public void setSTLFile(File stlFile) {
-        this.stlFile = stlFile;
         try {
             readSTL(stlFile);
         } catch (IOException e) {

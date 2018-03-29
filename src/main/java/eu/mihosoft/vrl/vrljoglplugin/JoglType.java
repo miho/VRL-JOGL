@@ -89,7 +89,6 @@ import javax.swing.JLabel;
 public class JoglType extends TypeRepresentationBase {
 
     private static final long serialVersionUID = 4412789368035724900L;
-    private BranchGroup shapeGroup;
     private JOGLCanvas3D canvas;
     private VContainer container;
     public static final String ORIENTATION_KEY = "orientation";
@@ -143,38 +142,39 @@ public class JoglType extends TypeRepresentationBase {
 
         this.canvas = canvas;
 
-
-        setValueOptions("width=160;height=120;blurValue=0.7F;"
-                + "renderOptimization=false;realtimeOptimization=false");
+        setValueOptions("width=160;height=120;");
 
         minimumVCanvas3DSize = new Dimension(160, 120);
 
         container = new VContainer();
-
         container.add(canvas);
 
         this.add(container);
-
         this.setInputComponent(container);
     }
 
+    @Override
+    public void setValue(Object o) {
+        System.out.println("SET: " + o);
+        super.setValue(o);
+    }
 
     @Override
     public void setViewValue(Object o) {
-        Visualization visualization = (Visualization) o;
-        visualization.initRendering(canvas);
+        System.out.println("VIEW: " + o);
+        if(o!=null) {
+            Visualization visualization = (Visualization) o;
+            visualization.init(canvas);
+            viewValue = o;
+        }
     }
 
     @Override
     public void emptyView() {
-        if (canvas != null) {
-            container.remove(canvas);
-            canvas.destroy();
-
-            Dimension preferredSize = canvas.getPreferredSize();
-            canvas = new JOGLCanvas3D(this, capabilities);
-            canvas.setPreferredSize(preferredSize);
-            container.add(canvas);
+        System.out.println("EMPTY: " + viewValue);
+        if(viewValue!=null) {
+            Visualization visualization = (Visualization) viewValue;
+            visualization.dispose(canvas);
         }
     }
 
@@ -288,7 +288,6 @@ public class JoglType extends TypeRepresentationBase {
         CustomParamData result = super.getCustomData();
 
         Transform3D t3d = new Transform3D();
-//        getUniverseCreator().getRootGroup().getTransform(t3d);
         double[] values = new double[16];
         t3d.get(values);
 

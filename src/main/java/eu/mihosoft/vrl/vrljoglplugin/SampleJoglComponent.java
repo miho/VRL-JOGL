@@ -19,13 +19,19 @@ import java.io.Serializable;
 public class SampleJoglComponent implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private STLVisualization visualization;
 
     public Visualization view(@ParamInfo(
             style="load-dialog",
             options="endings=[\".stl\"]; description=\"*.stl - Files\"") File stlFile) {
 
-        STLVisualization visualization =  new STLVisualization();
+        visualization =  new STLVisualization();
         visualization.setSTLFile(stlFile);
+
+        return visualization;
+    }
+
+    public Visualization view() {
 
         return visualization;
     }
