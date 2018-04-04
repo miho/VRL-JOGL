@@ -20,15 +20,13 @@ public class PluginConfigurator extends VPluginConfigurator{
 
     public PluginConfigurator() {
         //specify the plugin name and version
-       setIdentifier(new PluginIdentifier("JOGL", "0.1"));
+       setIdentifier(new PluginIdentifier("JOGL", "0.2"));
 
        // optionally allow other plugins to use the api of this plugin
        // you can specify packages that shall be
        // exported by using the exportPackage() method:
        //
        // exportPackage("com.your.package");
-
-        exportClass("eu.mihosoft.vrl.vrljoglplugin.STLVisualization");
 
        // describe the plugin
        setDescription("JOGL Plugin");
@@ -71,8 +69,7 @@ public class PluginConfigurator extends VPluginConfigurator{
            // vapi.addTypeRepresentation(MyType.class);
            
            vapi.addTypeRepresentation(JoglType.class);
-           
-           vapi.addComponent(SampleJoglComponent.class);
+           vapi.addComponent(STLViewer.class);
        }
    }
 

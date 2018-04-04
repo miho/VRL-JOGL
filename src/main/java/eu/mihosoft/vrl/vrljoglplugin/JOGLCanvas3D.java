@@ -15,8 +15,8 @@ import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import com.jogamp.opengl.awt.GLJPanel;
-import javax.swing.Box;
-import javax.swing.JPopupMenu;
+
+import javax.swing.*;
 
 /**
  * Extended version of

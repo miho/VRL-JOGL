@@ -53,6 +53,7 @@
 package eu.mihosoft.vrl.vrljoglplugin;
 
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLProfile;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.reflection.CustomParamData;
 import eu.mihosoft.vrl.reflection.RepresentationType;
@@ -124,8 +125,13 @@ public class JoglType extends TypeRepresentationBase {
         nameLabel.setAlignmentY(0.5f);
         this.add(nameLabel);
 
-        this.capabilities = new GLCapabilities(null);
-        capabilities.setPBuffer(true); // important for macOS
+        // init GL capabilities
+        GLProfile glp = GLProfile.get(GLProfile.GL3);
+        this.capabilities = new GLCapabilities(glp);
+        this.capabilities.setPBuffer(true); // causes rendering bugs if disabled
+        this.capabilities.setFBO(true);
+        this.setDoubleBuffered(false);
+        this.capabilities.setAlphaBits(8);
     }
 
     /**
@@ -155,13 +161,11 @@ public class JoglType extends TypeRepresentationBase {
 
     @Override
     public void setValue(Object o) {
-        System.out.println("SET: " + o);
         super.setValue(o);
     }
 
     @Override
     public void setViewValue(Object o) {
-        System.out.println("VIEW: " + o);
         if(o!=null) {
             Visualization visualization = (Visualization) o;
             visualization.init(canvas);
@@ -171,7 +175,6 @@ public class JoglType extends TypeRepresentationBase {
 
     @Override
     public void emptyView() {
-        System.out.println("EMPTY: " + viewValue);
         if(viewValue!=null) {
             Visualization visualization = (Visualization) viewValue;
             visualization.dispose(canvas);
