@@ -492,8 +492,16 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         if(scalableSurface != null) {
             float[] renderScale = new float[2];
             scalableSurface.getCurrentSurfaceScale(renderScale);
-            renderScaleX = renderScale[0];
-            renderScaleY = renderScale[1];
+
+            if(Float.compare(renderScale[0], renderScaleX) !=0
+                    && Float.compare(renderScale[1], renderScaleY) !=0 ) {
+                System.out.println("-> [VRL-JOGL]: render scale changed:");
+                System.out.println(" old scale = (" + renderScaleX + "," + renderScaleY + ")");
+                System.out.println(" new scale = (" + renderScale[0] + "," + renderScale[1] + ")");
+
+                renderScaleX = renderScale[0];
+                renderScaleY = renderScale[1];
+            }
         }
     }
 
