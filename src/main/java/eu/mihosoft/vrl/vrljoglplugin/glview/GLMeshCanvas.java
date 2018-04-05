@@ -359,7 +359,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        if (e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() == 2) {
             centerAnim(center,new Vector3f());
             arcBall.reset();
             arcBall.setBounds(getWidth(), getHeight());
