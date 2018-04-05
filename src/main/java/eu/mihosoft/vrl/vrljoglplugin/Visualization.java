@@ -5,6 +5,8 @@
  */
 package eu.mihosoft.vrl.vrljoglplugin;
 
+import eu.mihosoft.vrl.visual.Disposable;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,13 @@ import java.io.Serializable;
  */
 public interface Visualization extends Serializable {
 
+    /**
+     * Initializes this visualization.
+     *
+     * Custom GL visualizations should
+     *
+     * @param canvas
+     */
     void init(JOGLCanvas3D canvas);
     void dispose(JOGLCanvas3D canvas);
 }

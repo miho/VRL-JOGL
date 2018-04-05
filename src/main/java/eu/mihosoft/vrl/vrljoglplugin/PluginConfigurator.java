@@ -34,7 +34,7 @@ public class PluginConfigurator extends VPluginConfigurator{
        // copyright info
        setCopyrightInfo("JOGL-Plugin",
                "(c) Michael Hoffer",
-               "www.mihosoft.eu", "License Name", "License Text...");
+               "www.mihosoft.eu", "see VRL-Studio", "see VRL-Studio");
 
        // specify dependencies
        // addDependency(new PluginDependency("VRL", "0.4.0", "0.4.0"));

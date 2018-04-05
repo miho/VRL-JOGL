@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.mihosoft.vrl.vrljoglplugin;
+package edu.gcsc.vrl.vrljoglplugin.tmp;
 
 
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.vrljoglplugin.Visualization;
 
 import java.io.File;
 import java.io.Serializable;

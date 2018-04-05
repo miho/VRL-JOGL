@@ -1,4 +1,4 @@
-package eu.mihosoft.vrl.vrljoglplugin;
+package edu.gcsc.vrl.vrljoglplugin.tmp;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -7,6 +7,8 @@ import com.jogamp.opengl.GLEventListener;
 
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
+import eu.mihosoft.vrl.vrljoglplugin.JOGLCanvas3D;
+import eu.mihosoft.vrl.vrljoglplugin.Visualization;
 
 import java.io.File;
 import java.io.IOException;

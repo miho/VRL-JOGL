@@ -182,7 +182,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     @Override
     public void init(GLAutoDrawable drawable) {
 
-        System.out.println("init");
+        System.out.println("-> [VRL-JOGL]: gl init");
 
         this.drawable = drawable;
         this.gl = drawable.getGL().getGL3();
@@ -214,7 +214,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     @Override
     public void dispose(GLAutoDrawable drawable) {
 
-        System.out.println("dispose");
+        System.out.println("-> [VRL-JOGL]: gl dispose");
 
         program.delete();
         scalableSurface = null;
@@ -232,6 +232,12 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
         gl.glEnable(gl.GL_DEPTH_TEST);
 
+        animateFrame();
+
+        drawMesh(gl);
+    }
+
+    private void animateFrame() {
         if(fromPerspective!=null) {
             perspective+=deltaPerspective;
 
@@ -277,8 +283,6 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         if(animator!=null && !isAnimating() && animator.isAnimating()) {
             animator.stop();
         }
-
-        drawMesh(gl);
     }
 
     private boolean isAnimating() {
@@ -512,6 +516,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     @Override
     public void init(JOGLCanvas3D canvas) {
+        System.out.println("-> [VRL-JOGL]: visualization init");
         canvas.addGLEventListener(this);
         canvas.addMouseListener(this);
         canvas.addMouseMotionListener(this);
@@ -522,6 +527,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     @Override
     public void dispose(JOGLCanvas3D canvas) {
+        System.out.println("-> [VRL-JOGL]: visualization dispose");
         canvas.removeGLEventListener(this);
         canvas.removeMouseListener(this);
         canvas.removeMouseMotionListener(this);
