@@ -359,7 +359,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() == 2) {
+        if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 2) {
             centerAnim(center,new Vector3f());
             arcBall.reset();
             arcBall.setBounds(getWidth(), getHeight());
@@ -369,7 +369,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3) {
+        if (SwingUtilities.isLeftMouseButton(e) || SwingUtilities.isRightMouseButton(e)) {
             mousePos = e.getPoint();
 
             // scale mouse coordinates according to render scale
@@ -383,7 +383,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3) {
+        if (SwingUtilities.isLeftMouseButton(e) || SwingUtilities.isRightMouseButton(e)) {
             arcBall.endDrag();
         }
     }
@@ -410,12 +410,12 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
         Point d = new Point(p.x - mousePos.x, p.y - mousePos.y);
 
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (SwingUtilities.isLeftMouseButton(e)) {
 
             arcBall.drag(p.x, p.y);
 
             updateDisplay();
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
+        } else if (SwingUtilities.isRightMouseButton(e)) {
 
             Vector3f v = new Vector3f(
                     d.x / (0.5f * getWidth()),
@@ -506,7 +506,12 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     }
 
     public void setScalableSurface(ScalableSurface scalableSurface) {
+        System.out.println("here");
         this.scalableSurface = scalableSurface;
+        updateRenderScale();
+
+        System.out.println("-> [VRL-JOGL]: render scale:");
+        System.out.println(" scale = (" + renderScaleX + "," + renderScaleY + ")");
     }
 
     public int getWidth() {

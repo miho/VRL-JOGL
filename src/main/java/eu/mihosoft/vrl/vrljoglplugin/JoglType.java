@@ -128,10 +128,16 @@ public class JoglType extends TypeRepresentationBase {
         // init GL capabilities
         GLProfile glp = GLProfile.get(GLProfile.GL3);
         this.capabilities = new GLCapabilities(glp);
+
+        // FBO and/or PBuffer are needed for GLJPanel
         this.capabilities.setPBuffer(true); // causes rendering bugs if disabled
-        this.capabilities.setFBO(true);
+        this.capabilities.setFBO(true);     // causes rendering bugs if disabled
         this.setDoubleBuffered(false);
         this.capabilities.setAlphaBits(8);
+        this.capabilities.setRedBits(8);
+        this.capabilities.setGreenBits(8);
+        this.capabilities.setBlueBits(8);
+        this.capabilities.setHardwareAccelerated(true);
     }
 
     /**
