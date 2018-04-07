@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------------
+// publishing information
+// -----------------------------------------------------------------------------
+ext.publishing.artifactId =  project.name.toLowerCase()
+ext.publishing.groupId    =  'eu.mihosoft.vrl.vrljogl'
+ext.publishing.versionId  =  '0.2'
+
+ext.publishing.developerName         = 'Michael Hoffer'
+ext.publishing.developerAlias        = 'miho'
+ext.publishing.developerEmail        = 'info@michaelhoffer.de'
+ext.publishing.inceptionYear         = '2018'
+
+ext.publishing.bintray.repo          = 'VRL'
+ext.publishing.bintray.userOrg       = 'miho'
+ext.publishing.bintray.name          = project.name
+
+ext.publishing.desc                  = 'OpenGL integration for VRL-Studio'
+ext.publishing.license               = 'LGPL-3.0'
+ext.publishing.licenseUrl            = 'https://github.com/miho/VRL-JOGL/blob/master/LICENSE'
+ext.publishing.labels                = ['OpenGL', 'VRL', 'scientific visualization', 'VRL-Studio', 'java']
+ext.publishing.websiteUrl            = 'https://github.com/miho/VRL-JOGL'
+ext.publishing.issueTrackerUrl       = 'https://github.com/miho/VRL-JOGL/issues'
+ext.publishing.vcsUrl                = 'https://github.com/miho/VRL-JOGL.git'
+
+ext.publishing.pomName               =  ext.publishing.artifactId

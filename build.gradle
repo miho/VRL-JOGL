@@ -25,25 +25,38 @@
  * authors and should not be interpreted as representing official policies, either expressed
  * or implied, of Michael Hoffer <info@michaelhoffer.de>.
  */
-apply plugin: 'java'
-
-sourceCompatibility = '1.8'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-	
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
-}
 
 buildscript {
-    
+
     repositories {
         mavenCentral()
         jcenter()
     }
-    
+
     dependencies {
         classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.2.3')
     }
+}
+
+plugins {
+//    id 'com.github.hierynomus.license' version '0.13.1'
+    id 'maven-publish'
+    id 'net.nemerosa.versioning' version '2.6.1'
+    id 'com.jfrog.bintray' version '1.7.2'
+    id 'com.github.ben-manes.versions' version '0.13.0'
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+	
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
 }
 
 repositories {
@@ -74,6 +87,8 @@ dependencies {
     // compile files("lib/jars/")
 }
 
+apply from: 'gradle/publishing.gradle'
+
 def loadProperties(String sourceFileName) {
     
     def config = new Properties()
@@ -91,10 +106,10 @@ def loadProperties(String sourceFileName) {
 // excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
 jar {
 
-    // dependencies except VRL
-    from configurations.runtime.asFileTree.
-        filter({file->return !file.name.startsWith("vrl-0")}).
-        files.collect { zipTree(it) }
+//    // dependencies except VRL
+//    from configurations.runtime.asFileTree.
+//        filter({file->return !file.name.startsWith("vrl-0")}).
+//        files.collect { zipTree(it) }
 
     // project class files compiled from source
     from files(sourceSets.main.output.classesDirs)
@@ -120,13 +135,15 @@ String getVRLDir() {
 }
 
 // compiles and installs the vrl plugin to the specified folder
-task installVRLPlugin(dependsOn: [clean,jar]) {
+task installVRLPlugin(dependsOn: [clean,publicationVRLPluginJar]) {
     doLast {
         println(">> copying vrl plugin to: " + getVRLDir() + "/plugin-updates")
+
         copy {
-            from buildDir.getPath() + "/libs/" + rootProject.name + ".jar"
-            into getVRLDir() + "/plugin-updates"
-            include '**/*.jar'
+            from buildDir.getPath() + "/libs/" + rootProject.name + ".vrlplugin"
+            into getVRLDir() + "/plugin-updates/"
+            include rootProject.name + ".vrlplugin"
+            rename (rootProject.name + ".vrlplugin", rootProject.name + ".jar")
         }
     }
 }
