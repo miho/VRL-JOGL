@@ -37,7 +37,7 @@ public class STLLoader {
         System.out.println("-> verts loaded " + vertexList.size());
         if (vertexList.isEmpty()) {
             System.out.println("-> empty mesh");
-            return new Mesh(new float[0], new int[0]);
+            return Mesh.newInstance(new float[0], new int[0]);
         }
 
         // start deduplication
@@ -85,7 +85,7 @@ public class STLLoader {
         System.out.println("   #remaining-verts: " + newVerts.size());
 
         // finally return the mesh
-        return new Mesh(finalVertices, indices);
+        return Mesh.newInstance(finalVertices, indices);
     }
 
     /**
