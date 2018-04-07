@@ -26,6 +26,7 @@ public class PluginConfigurator extends VPluginConfigurator {
 
         exportClass(Mesh.class.getName());
         exportClass(JOGLCanvas3D.class.getName());
+        exportClass(GLMeshCanvas.class.getName());
         exportClass(JoglType.class.getName());
         exportClass(STLViewer.class.getName());
 
