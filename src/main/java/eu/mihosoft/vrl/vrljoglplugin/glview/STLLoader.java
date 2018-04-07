@@ -27,7 +27,17 @@ public class STLLoader {
 
         // parse STL file (binary or ascii)
         List<Vertex> vertexList = parse(file);
+        
+        return deduplicateTriangleVertices(vertexList);
+    }
 
+    /**
+     * Deduplicates the soecified triangle vertices.
+     *
+     * @param vertexList vertices to deduplicate
+     * @return mesh containing the deduplicated vertices and index list
+     */
+    public Mesh deduplicateTriangleVertices(List<Vertex> vertexList) {
         // init indices
         for (int i = 0; i < vertexList.size(); i++) {
             vertexList.get(i).index = i;
