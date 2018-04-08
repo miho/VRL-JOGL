@@ -516,7 +516,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         // more testing needed on other machines
 
         zoom -= zoom * delta * 0.005 /*base zoom*/
-                + Math.signum(delta) * Math.min(0.007 / (zoom * zoom), 0.015) /*accelerate if far away*/;
+                + Math.signum(delta) * Math.min(0.007 / (zoom * zoom), 0.01) /*accelerate if far away*/;
 
         if (zoom < 0.01f) {
             zoom = 0.01f;

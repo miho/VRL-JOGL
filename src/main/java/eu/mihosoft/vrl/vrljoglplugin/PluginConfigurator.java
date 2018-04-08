@@ -16,7 +16,7 @@ public class PluginConfigurator extends VPluginConfigurator {
 
     public PluginConfigurator() {
         //specify the plugin name and version
-        setIdentifier(new PluginIdentifier("JOGL", "0.4"));
+        setIdentifier(new PluginIdentifier("JOGL", "0.4.1"));
 
         // optionally allow other plugins to use the api of this plugin
         // you can specify packages that shall be
