@@ -66,7 +66,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     private Point mousePos = new Point();
 
     // arcball for rotating the geometry
-    private ArcBall arcBall = new ArcBall(100,100);
+    private ArcBall arcBall = new ArcBall(100, 100);
 
     // buffer for the transformation matrix (for GPU shaders)
     private FloatBuffer transformMatrixBuffer = Buffers.newDirectFloatBuffer(16);
@@ -98,49 +98,107 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     private Float fromZoom;
     private Float toZoom;
     private float deltaZoom;
+    private boolean animationEnabled;
+    private boolean skipInitAnimation;
 
     public GLMeshCanvas(Mesh mesh) {
         this.mesh = mesh;
+        setAnimationEnabled(true);
+    }
+
+    /**
+     * Defines whether to skip initial scale animation (might need too many resources if many
+     * visualizations are used at the same time).
+     *
+     * @param state state to set
+     */
+    public void setSkipInitAnimation(boolean state) {
+        this.skipInitAnimation = state;
+    }
+
+    /**
+     * Indicates whether the initial scale animation shall be skipped.
+     *
+     * @return {@code true} if skipped; {@code false} otherwise
+     */
+    public boolean isSkipInitAnimation() {
+        return skipInitAnimation;
+    }
+
+    /**
+     * Defines whether to enable animations.
+     *
+     * @param state state to set
+     */
+    public final void setAnimationEnabled(boolean state) {
+        this.animationEnabled = state;
+    }
+
+    /**
+     * Indicates whether animations are enabled.
+     *
+     * @return {@code true} if enabled; {@code false} otherwise
+     */
+    public boolean isAnimationEnabled() {
+        return animationEnabled;
     }
 
     private void perspectiveAnim(float v) {
-        if(!animator.isAnimating()) {
-            animator.start();
+        if (isAnimationEnabled()) {
+            if (!animator.isAnimating()) {
+                animator.start();
+            }
+            fromPerspective = perspective;
+            toPerspective = v;
+            deltaPerspective = (toPerspective - fromPerspective) / 15f;
+        } else {
+            perspective = v;
         }
-        fromPerspective = perspective;
-        toPerspective = v;
-        deltaPerspective = (toPerspective - fromPerspective)/15f;
     }
 
     private void scaleAnim(float initV, float v) {
-        if(!animator.isAnimating()) {
-            animator.start();
+        if (isAnimationEnabled()) {
+            System.out.println("animating: " + isAnimationEnabled());
+            if (!animator.isAnimating()) {
+                animator.start();
+            }
+            fromScale = initV;
+            scale = initV;
+            toScale = v;
+            deltaScale = (toScale - fromScale) / 15f;
+        } else {
+            System.out.println("not animating");
+            scale = v;
         }
-        fromScale = initV;
-        scale = initV;
-        toScale = v;
-        deltaScale = (toScale - fromScale)/15f;
     }
 
     private void zoomAnim(float initV, float v) {
-        if(!animator.isAnimating()) {
-            animator.start();
+        if (isAnimationEnabled()) {
+            if (!animator.isAnimating()) {
+                animator.start();
+            }
+            fromZoom = initV;
+            zoom = initV;
+            toZoom = v;
+            deltaZoom = (toZoom - fromZoom) / 20f;
+        } else {
+            zoom = v;
         }
-        fromZoom = initV;
-        zoom = initV;
-        toZoom = v;
-        deltaZoom = (toZoom - fromZoom)/20f;
     }
 
     private void centerAnim(Vector3f fromCenter, Vector3f toCenter) {
-        if(!animator.isAnimating()) {
-            animator.start();
-        }
-        this.fromCenter = fromCenter;
-        this.center = fromCenter;
-        this.toCenter = toCenter;
+        if (isAnimationEnabled()) {
+            if (!animator.isAnimating()) {
+                animator.start();
+            }
+            this.fromCenter = fromCenter;
+            this.center = fromCenter;
+            this.toCenter = toCenter;
 
-        deltaCenter = new Vector3f(toCenter).sub(fromCenter).div(15f);
+            deltaCenter = new Vector3f(toCenter).sub(fromCenter).div(15f);
+        } else {
+            this.center = toCenter;
+        }
     }
 
     public void setOrthographicView() {
@@ -167,8 +225,8 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         arcBall.reset();
 
         // rescale glMesh vertices and center them at (0,0,0)
-        for(int i = 0; i < m.vertices.length; i++) {
-            m.vertices[i] = (m.vertices[i] - center.get(i%3) ) * scale;
+        for (int i = 0; i < m.vertices.length; i++) {
+            m.vertices[i] = (m.vertices[i] - center.get(i % 3)) * scale;
         }
 
         // since we rescaled and centered them, scale will be 1.0 and center is the origin (0,0,0)
@@ -208,7 +266,10 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         animator = new FPSAnimator(drawable, 60);
 
         perspective = 0.25f;
-        scaleAnim(0.01f,1.0f);
+        if (!isSkipInitAnimation()) {
+            scaleAnim(0.01f, 1.0f);
+        }
+
     }
 
     @Override
@@ -221,7 +282,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
         try {
             animator.remove(drawable);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             // animator already removed
         }
     }
@@ -238,10 +299,10 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     }
 
     private void animateFrame() {
-        if(fromPerspective!=null) {
-            perspective+=deltaPerspective;
+        if (fromPerspective != null) {
+            perspective += deltaPerspective;
 
-            if(deltaPerspective > 0 && perspective > toPerspective
+            if (deltaPerspective > 0 && perspective > toPerspective
                     || deltaPerspective <= 0 && perspective <= toPerspective) {
                 perspective = toPerspective;
                 fromPerspective = null;
@@ -249,47 +310,47 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
             }
         }
 
-        if(fromScale!=null) {
-            scale+=deltaScale;
-            if(deltaScale > 0 && scale > toScale || deltaScale <= 0 && scale <= toScale) {
+        if (fromScale != null) {
+            scale += deltaScale;
+            if (deltaScale > 0 && scale > toScale || deltaScale <= 0 && scale <= toScale) {
                 scale = toScale;
                 fromScale = null;
                 toScale = null;
             }
         }
 
-        if(fromCenter!=null) {
+        if (fromCenter != null) {
             center.add(deltaCenter);
-            if(new Vector3f(toCenter).sub(center).length()<1e-3) {
+            if (new Vector3f(toCenter).sub(center).length() < 1e-3) {
                 center.set(toCenter);
                 fromCenter = null;
                 toCenter = null;
 
-                if(resetZoomOnCenterAnim) {
+                if (resetZoomOnCenterAnim) {
                     zoomAnim(zoom, 1.f);
                 }
             }
         }
 
-        if(fromZoom!=null) {
-            zoom+=deltaZoom;
-            if(deltaZoom > 0 && zoom > toZoom || deltaZoom <= 0 && zoom <= toZoom) {
+        if (fromZoom != null) {
+            zoom += deltaZoom;
+            if (deltaZoom > 0 && zoom > toZoom || deltaZoom <= 0 && zoom <= toZoom) {
                 zoom = toZoom;
                 fromZoom = null;
                 toZoom = null;
             }
         }
 
-        if(animator!=null && !isAnimating() && animator.isAnimating()) {
+        if (animator != null && !isAnimating() && animator.isAnimating()) {
             animator.stop();
         }
     }
 
     private boolean isAnimating() {
-        return fromScale!=null
-                || fromPerspective!=null
-                || fromCenter!=null
-                || fromZoom !=null;
+        return fromScale != null
+                || fromPerspective != null
+                || fromCenter != null
+                || fromZoom != null;
     }
 
     void drawMesh(GL3 gl) {
@@ -360,7 +421,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 2) {
-            centerAnim(center,new Vector3f());
+            centerAnim(center, new Vector3f());
             arcBall.reset();
             arcBall.setBounds(getWidth(), getHeight());
             resetZoomOnCenterAnim = true;
@@ -374,8 +435,8 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
             // scale mouse coordinates according to render scale
             // (important for retina, index.e., hiDPI)
-            mousePos.x *=renderScaleX;
-            mousePos.y *=renderScaleY;
+            mousePos.x *= renderScaleX;
+            mousePos.y *= renderScaleY;
 
             arcBall.beginDrag(mousePos.x, mousePos.y);
         }
@@ -405,8 +466,8 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
         // scale mouse coordinates according to render scale
         // (important for retina, index.e., hiDPI)
-        p.x *=renderScaleX;
-        p.y *=renderScaleY;
+        p.x *= renderScaleX;
+        p.y *= renderScaleY;
 
         Point d = new Point(p.x - mousePos.x, p.y - mousePos.y);
 
@@ -446,27 +507,18 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     public void mouseWheelMoved(MouseWheelEvent e) {
 
         // we do nothing if zoom is currently animated
-        if(fromZoom!=null) {
+        if (fromZoom != null) {
             return;
         }
 
-        float delta = (float) e.getWheelRotation();
+        float delta = (float) e.getPreciseWheelRotation();
         // this zoom update works great on Apple trackpads
         // more testing needed on other machines
-        // zoom += zoom * delta * 0.005;
 
-        if (delta < 0)
-        {
-            for (int i=0; i > delta; --i)
-                zoom *= 1.005;
-        }
-        else if (delta > 0)
-        {
-            for (int i=0; i < delta; ++i)
-                zoom /= 1.005;
-        }
+        zoom -= zoom * delta * 0.005 /*base zoom*/
+                + Math.signum(delta) * Math.min(0.007 / (zoom * zoom), 0.015) /*accelerate if far away*/;
 
-        if( zoom < 0.01f) {
+        if (zoom < 0.01f) {
             zoom = 0.01f;
         } else if (zoom > 100f) {
             zoom = 100f;
@@ -489,12 +541,12 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     }
 
     private void updateRenderScale() {
-        if(scalableSurface != null) {
+        if (scalableSurface != null) {
             float[] renderScale = new float[2];
             scalableSurface.getCurrentSurfaceScale(renderScale);
 
-            if(Float.compare(renderScale[0], renderScaleX) !=0
-                    && Float.compare(renderScale[1], renderScaleY) !=0 ) {
+            if (Float.compare(renderScale[0], renderScaleX) != 0
+                    && Float.compare(renderScale[1], renderScaleY) != 0) {
                 System.out.println("-> [VRL-JOGL]: render scale changed:");
                 System.out.println(" old scale = (" + renderScaleX + "," + renderScaleY + ")");
                 System.out.println(" new scale = (" + renderScale[0] + "," + renderScale[1] + ")");
@@ -506,7 +558,6 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     }
 
     public void setScalableSurface(ScalableSurface scalableSurface) {
-        System.out.println("here");
         this.scalableSurface = scalableSurface;
         updateRenderScale();
 
@@ -550,7 +601,7 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
         try {
             animator.remove(drawable);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             // animator already removed
         }
     }
