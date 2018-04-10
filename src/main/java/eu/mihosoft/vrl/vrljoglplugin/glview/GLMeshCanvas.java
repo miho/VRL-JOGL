@@ -369,8 +369,8 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
                 program.getUniformLocation("view_matrix"),
                 1, false, viewMatrixBuffer);
 
-        // Compensate for z-flattening when zooming
-        gl.glUniform1f(program.getUniformLocation("zoom"), 1.f / zoom);
+        // Compensate for color changes during zoom (geometry looks flattened)
+        gl.glUniform1f(program.getUniformLocation("zoomInverse"), 1.f / zoom);
 
         // Find and enable the attribute location for vertex position
         int vertexPosition = program.getAttributeLocation("vertex_position");
@@ -413,7 +413,9 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
         m.scale(zoom, zoom, 1f);
 
-        m._m23(perspective);
+        m._m23(perspective *
+                Math.min(2.0f, zoom) // prevent far distortion restricting to 2.0f prevents near clipping
+        );
 
         return m;
     }
@@ -493,9 +495,10 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     }
 
     public void updateDisplay() {
-        // drawable.display();
         if(drawable instanceof JComponent) {
             VSwingUtil.repaintRequest((JComponent) drawable);
+        } else {
+            drawable.display();
         }
     }
 
@@ -607,3 +610,64 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
         }
     }
 }
+
+
+
+// TODO 09.04.2018
+// We would prefer to set the view matrix according to gluPerspective()
+//
+//    Matrix4f transformMatrix() {
+//
+//        Matrix4f mat = new Matrix4f().identity();
+//
+//        //mat._m33(0);
+//
+//        // move to (0,0,0)
+//
+//        mat.translate(0,0,1);
+//
+//        mat.translate(new Vector3f(center).negate().mul(scale * zoom, scale * zoom, scale * zoom));
+//
+//        // scale
+//        mat.scale(scale * zoom, scale * zoom, scale * zoom);
+//
+//        mat.mul(arcBall.getRotation());
+//
+//
+//        return mat;
+//    }
+//
+//    Matrix4f viewMatrix() {
+//
+//        Matrix4f m = new Matrix4f().identity();
+//
+//        // gluPerspective()
+//        // f = cotangent(fovy/2), fovy is the view angle in degrees
+//        float aspect = getWidth()/getHeight();
+//
+//        // zFar/zNear not to large because of z buffer resolution
+//        float zNear = 0.00001f;
+//        float zFar = 10f;
+//
+//        float f = 1.7305f;
+//
+//
+//        m._m00(-f/aspect);
+//        m._m11(f);
+//        m._m22(-(zFar+zNear)/(zNear-zFar));
+//        m._m32((2*zFar*zNear)/(zNear-zFar));
+//        m._m23(1);
+//
+//
+////        if (getWidth() > getHeight()) {
+////            m.scale(-getHeight() / (float) getWidth(), 1, 0.5f);
+////        } else {
+////            m.scale(-1, getWidth() / (float) getHeight(), 0.5f);
+////        }
+//
+//        //m.scale(zoom, zoom, 1f);
+//
+//        // m._m23(perspective);
+//
+//        return m;
+//    }

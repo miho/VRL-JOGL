@@ -1,6 +1,6 @@
 #version 150
 
-uniform float zoom;
+uniform float zoomInverse;
 
 in vec3 ec_pos;
 
@@ -23,7 +23,10 @@ void main() {
 
     // compute normal
     vec3 ec_normal = normalize(cross(dFdx(ec_pos), dFdy(ec_pos)));
-    ec_normal.z *= zoom;
+
+    // rescale normal to prevent color change during zoom
+    ec_normal.z *= zoomInverse;
+
     ec_normal = normalize(ec_normal);
 
     // interpolation points

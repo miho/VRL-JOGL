@@ -86,11 +86,11 @@ dependencies {
     compile 'eu.mihosoft.vvecmath:vvecmath:0.3.8'
 
     // only for standalone tests
-    testAppDep "org.jogamp.gluegen:gluegen-rt:$jogl:natives-macosx-universal"
-    testAppDep "org.jogamp.jogl:jogl-all:$jogl:natives-macosx-universal"
+    compile "org.jogamp.gluegen:gluegen-rt:$jogl:natives-macosx-universal"
+    compile "org.jogamp.jogl:jogl-all:$jogl:natives-macosx-universal"
 
-    testAppDep "org.jogamp.gluegen:gluegen-rt:$jogl:natives-windows-amd64"
-    testAppDep "org.jogamp.jogl:jogl-all:$jogl:natives-windows-amd64"
+    compile "org.jogamp.gluegen:gluegen-rt:$jogl:natives-windows-amd64"
+    compile "org.jogamp.jogl:jogl-all:$jogl:natives-windows-amd64"
 
     // TODO: Add dependencies here ...
     // You can read more about how to add dependency here:
@@ -121,12 +121,17 @@ task testAppJar(type: Jar, dependsOn: jar) {
     classifier = 'test-app'
     extension = 'jar'
 
-    // dependencies except VRL
-    from configurations.runtime.asFileTree.
-            // filter({file->return !file.name.startsWith("vrl-0")}).
-            files.collect { zipTree(it) }
+    // dependencies except VRL and the VRL-Jogl plugin configurator
+    from {
+        configurations.runtime.asFileTree.
+                //filter({ file -> return !file.name.startsWith("vrl-0") }).
+        //filter({ file -> return !file.name.toLowerCase().startsWith("vrl-jogl") }).
+                files.collect { zipTree(it) }
+    } {
+        exclude "*jogl*"
+    }
 
-    from configurations.testAppDep
+    //from configurations.testAppDep
 
     // project class files compiled from source
     from files(sourceSets.main.output.classesDirs)
