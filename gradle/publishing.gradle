@@ -28,7 +28,6 @@ task publicationJar(type: Jar, dependsOn: classes) {
     // project class files compiled from source
     from files(sourceSets.main.output.classesDirs)
 }
-
 // create one jar for the plugin jar (fat-jar)
 task publicationVRLPluginJar(type: Jar, dependsOn: jar) {
 
@@ -45,7 +44,6 @@ task publicationVRLPluginJar(type: Jar, dependsOn: jar) {
     // include shaders and other resources
     from files(sourceSets.main.resources)
 }
-
 
 artifacts {
     archives publicationVRLPluginJar

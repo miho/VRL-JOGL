@@ -494,8 +494,9 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     public void updateDisplay() {
         // drawable.display();
-        VSwingUtil.repaintRequest((JComponent) drawable);
-        //((JComponent) drawable).repaint();
+        if(drawable instanceof JComponent) {
+            VSwingUtil.repaintRequest((JComponent) drawable);
+        }
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Main {
 
         try {
             mesh = new STLLoader().loadMesh(
-                    new File("models/jcsg-metric-threads-01.stl")
+                    new File("/Users/miho/tmp/jogltest.stl")
             );
         } catch (IOException e) {
             e.printStackTrace();
