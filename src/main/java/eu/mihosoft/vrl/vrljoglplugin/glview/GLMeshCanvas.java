@@ -101,6 +101,8 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
     private boolean animationEnabled;
     private boolean skipInitAnimation;
 
+    private boolean zoomToInner = true;
+
     public GLMeshCanvas(Mesh mesh) {
         this.mesh = mesh;
         setAnimationEnabled(true);
@@ -207,6 +209,22 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
     public void setPerspectiveView() {
         perspectiveAnim(0.25f);
+    }
+
+    /**
+     * Indicates whether zooming to inner is allowed.
+     * @return {@code true} if allowed; {@code false} otherwise
+     */
+    public boolean isZoomToInner() {
+        return zoomToInner;
+    }
+
+    /**
+     * Defines whether zoom to inner is allowed.
+     * @param zoomToInner value to set
+     */
+    public void setZoomToInner(boolean zoomToInner) {
+        this.zoomToInner = zoomToInner;
     }
 
     private void displayMesh(Mesh m) {
@@ -413,9 +431,11 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
 
         m.scale(zoom, zoom, 1f);
 
-        m._m23(perspective *
-                Math.min(2.0f, zoom) // prevent far distortion restricting to 2.0f prevents near clipping
-        );
+        // prevent far distortion
+        // restricting to 2.0f prevents near clipping (zooming inside is then not possible)
+        float zoomCompensation = isZoomToInner()?zoom: Math.min(2.0f, zoom);
+
+        m._m23(perspective * zoomCompensation);
 
         return m;
     }
