@@ -7,6 +7,7 @@ package eu.mihosoft.vrl.vrljoglplugin;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLException;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.visual.*;
 import java.awt.*;
@@ -174,6 +175,9 @@ public class JOGLCanvas3D extends GLJPanel implements
 //            super.paintComponent(g2);
 //        }
 //    }
+
+    private boolean reportedException = false;
+
     @Override
     public void paintComponent(Graphics g) {
 
@@ -239,7 +243,14 @@ public class JOGLCanvas3D extends GLJPanel implements
         g2.setClip(originalClipArea);
 
 //        postRender(g2);
-        super.paintComponent(g);
+        try {
+            super.paintComponent(g);
+        } catch(GLException ex) {
+            if(!reportedException) {
+                ex.printStackTrace();
+                reportedException = true;
+            }
+        }
 
 //        g2.setComposite(originalComposite);
 
