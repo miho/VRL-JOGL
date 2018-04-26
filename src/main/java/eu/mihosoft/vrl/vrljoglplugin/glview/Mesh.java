@@ -3,7 +3,7 @@ package eu.mihosoft.vrl.vrljoglplugin.glview;
 import eu.mihosoft.vvecmath.Vector3d;
 
 /**
- * A simple glMesh class.
+ * A simple Mesh class.
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
@@ -11,15 +11,27 @@ public final class Mesh {
 
     float[] vertices;
     int[] indices;
+    float[] colors;
+    float[] globalColor = {1.f,1.f,1.f,1.f};
 
     private Mesh(float[] vertices, int[] indices) {
         this.vertices = vertices;
         this.indices = indices;
     }
 
+    private Mesh(float[] vertices, int[] indices, float[] colors) {
+        this.vertices = vertices;
+        this.indices = indices;
+        this.colors = colors;
+    }
+
     public static Mesh newInstance(float[] vertices, int[] indices) {
         return new Mesh(vertices,indices);
     }
+    public static Mesh newInstance(float[] vertices, int[] indices, float[] colors) {
+        return new Mesh(vertices,indices, colors);
+    }
+
 
     float xmin() {
         return min(0);

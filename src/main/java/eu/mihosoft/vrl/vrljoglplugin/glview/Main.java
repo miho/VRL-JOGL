@@ -16,6 +16,11 @@ public class Main {
         GLProfile glp = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(glp);
         capabilities.setPBuffer(true);
+        capabilities.setFBO(true);
+//        capabilities.setAlphaBits(8);
+//        capabilities.setRedBits(8);
+//        capabilities.setGreenBits(8);
+//        capabilities.setBlueBits(8);
         capabilities.setDoubleBuffered(true);
 
         // create jogl panel
@@ -26,8 +31,13 @@ public class Main {
 
         try {
             mesh = new STLLoader().loadMesh(
-                    new File("/Users/miho/tmp/jogltest.stl")
+                    new File("/Users/miho/tmp/01.stl")
             );
+//            mesh.colors = new float[]{
+//                    1,0,0,1,
+//                    0,1,0,1,
+//                    0,0,1,1
+//            };
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

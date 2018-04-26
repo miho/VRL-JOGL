@@ -387,20 +387,33 @@ public class GLMeshCanvas implements GLEventListener, MouseListener, MouseMotion
                 program.getUniformLocation("view_matrix"),
                 1, false, viewMatrixBuffer);
 
-        // Compensate for color changes during zoom (geometry looks flattened)
+        // Compensate for color changes during zoom (otherwise geometry looks flattened)
         gl.glUniform1f(program.getUniformLocation("zoomInverse"), 1.f / zoom);
 
         // Find and enable the attribute location for vertex position
         int vertexPosition = program.getAttributeLocation("vertex_position");
         gl.glEnableVertexAttribArray(vertexPosition);
 
-        if (glMesh != null) {
-            // Then draw the glMesh with that vertex position
-            glMesh.draw(vertexPosition);
+        if(glMesh!=null && glMesh.isColorDataPresent()) {
+            // Find and enable the attribute location for vertex position
+            int vertexColor = program.getAttributeLocation("vertex_color");
+            gl.glEnableVertexAttribArray(vertexColor);
+
+            glMesh.draw(vertexPosition, vertexColor);
+
+            gl.glDisableVertexAttribArray(vertexColor);
+            gl.glDisableVertexAttribArray(vertexPosition);
+        } else if(glMesh!=null) {
+            // Find and enable the attribute location for vertex position
+            int vertexColor = program.getAttributeLocation("vertex_color");
+            gl.glEnableVertexAttribArray(vertexColor);
+
+            glMesh.draw(vertexPosition, vertexColor);
+
+            gl.glDisableVertexAttribArray(vertexColor);
+            gl.glDisableVertexAttribArray(vertexPosition);
         }
 
-        // Clean up state machine
-        gl.glDisableVertexAttribArray(vertexPosition);
         program.stopUsing();
     }
 
