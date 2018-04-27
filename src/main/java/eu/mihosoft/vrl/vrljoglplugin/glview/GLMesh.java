@@ -40,11 +40,9 @@ public class GLMesh {
 
             float[] posAndColor = new float[mesh.vertices.length + mesh.colors.length];
 
-            int counter = 0;
+            for (int i = 0; i < mesh.vertices.length/3; i++) {
 
-            for (int i = 0; i < mesh.vertices.length / 3; i++) {
-
-                int idx = counter + i * 3;
+                int idx = i * 7;
 
                 // vertex position
                 posAndColor[idx + 0] = mesh.vertices[i * 3 + 0];
@@ -52,20 +50,15 @@ public class GLMesh {
                 posAndColor[idx + 2] = mesh.vertices[i * 3 + 2];
 
                 // vertex color
-                posAndColor[idx + 3] = mesh.colors[i + 0];
-                posAndColor[idx + 4] = mesh.colors[i + 1];
-                posAndColor[idx + 5] = mesh.colors[i + 2];
-                posAndColor[idx + 6] = mesh.colors[i + 3];
-
-                counter += 4; // r,g,b,a
-            }
-
-            for (int i = 0; i < posAndColor.length; i++) {
-                System.out.println(posAndColor[i]);
+                posAndColor[idx + 3] = mesh.colors[i*4 + 0];
+                posAndColor[idx + 4] = mesh.colors[i*4 + 1];
+                posAndColor[idx + 5] = mesh.colors[i*4 + 2];
+                posAndColor[idx + 6] = mesh.colors[i*4 + 3];
             }
 
             //System.arraycopy(mesh.vertices, 0, posAndColor,0, mesh.vertices.length);
             //System.arraycopy(mesh.colors, 0, posAndColor,mesh.vertices.length, mesh.colors.length);
+
 
             vertices.allocate(posAndColor);
 

@@ -31,13 +31,16 @@ public class Main {
 
         try {
             mesh = new STLLoader().loadMesh(
-                    new File("/Users/miho/tmp/01.stl")
+                    new File("/Users/miho/tmp/jogltest.stl")
             );
-//            mesh.colors = new float[]{
-//                    1,0,0,1,
-//                    0,1,0,1,
-//                    0,0,1,1
-//            };
+            mesh.colors = new float[]{
+                    1,0,0,1,
+                    0,1,0,1,
+                    0,0,1,1,
+                    1,1,1,1,
+                    0,1,1,1,
+
+            };
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
